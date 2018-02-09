@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Standard">
+    <description>A custom coding standard</description>
+    <rule ref="PSR2"/>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Arrays/TrailingArrayCommaSniff.php"/>
+    <arg name="colors"/>
+    <arg name="extensions=php"/>
+    <file>./src</file>
+    <exclude-pattern type="relative">^/src/Enum</exclude-pattern>
+    <exclude-pattern type="relative">^/src/Exception</exclude-pattern>
+</ruleset>
