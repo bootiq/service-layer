@@ -3,6 +3,7 @@
 namespace BootIqTest\ServiceLayer\Request;
 
 use BootIq\ServiceLayer\Enum\HttpMethod;
+use BootIq\ServiceLayer\Request\DeleteMethod;
 use BootIq\ServiceLayer\Request\GetMethod;
 use BootIq\ServiceLayer\Request\HeadMethod;
 use BootIq\ServiceLayer\Request\HttpMethod as HttpMethodRequest;
@@ -208,6 +209,50 @@ class AbstractMethodTest extends TestCase
         };
 
         $this->assertEquals(HttpMethod::METHOD_PUT, $class->getMethod());
+        $this->assertEmpty($class->getEndpoint());
+        $this->assertEmpty($class->getData());
+        $this->assertFalse($class->isCacheable());
+        $this->assertEmpty($class->getHeaders());
+        $key = uniqid();
+        $value = uniqid();
+        $class->addHeader($key, $value);
+        $this->assertEquals($value, $class->getHeader($key));
+        $class->setHeaders([$key => $value]);
+        $this->assertEquals($value, $class->getHeader($key));
+        $this->assertEquals([$key => $value], $class->getHeaders());
+        $this->assertEquals(RequestOptions::JSON, $class->getDataRequestOption());
+    }
+
+    public function testDeleteMethod()
+    {
+        $class = new class extends DeleteMethod {
+
+            /**
+             * @return bool
+             */
+            public function isCacheable(): bool
+            {
+                return false;
+            }
+
+            /**
+             * @return string
+             */
+            public function getEndpoint(): string
+            {
+                return '';
+            }
+
+            /**
+             * @return array|null
+             */
+            public function getData()
+            {
+                return null;
+            }
+        };
+
+        $this->assertEquals(HttpMethod::METHOD_DELETE, $class->getMethod());
         $this->assertEmpty($class->getEndpoint());
         $this->assertEmpty($class->getData());
         $this->assertFalse($class->isCacheable());
