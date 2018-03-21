@@ -77,5 +77,13 @@ final class HttpCode
     const SUCCESS_CODES = [
         self::HTTP_CODE_OK,
         self::HTTP_CODE_OK_EMPTY,
+        self::HTTP_CODE_ACCEPTED,
+        self::HTTP_CODE_NON_AUTHORITATIVE,
+        self::HTTP_CODE_NO_CONTENT,
+        self::HTTP_CODE_RESET_CONTENT,
+        self::HTTP_CODE_PARTIAL_CONTENT,
+        self::HTTP_CODE_MULTI_STATUS,
+        self::HTTP_CODE_ALREADY_REPORTED,
+        self::HTTP_CODE_IM_USED,
     ];
 }
