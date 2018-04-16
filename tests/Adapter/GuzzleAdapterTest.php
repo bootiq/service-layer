@@ -112,7 +112,6 @@ class GuzzleAdapterTest extends TestCase
         $endpoint = uniqid();
         $uri = $this->urn . '/' . $endpoint;
         $data = uniqid();
-        $jsonData = \GuzzleHttp\json_encode($data);
 
         $request = $this->createMock(RequestInterface::class);
         $clientResponse = $this->createMock(PsrResponseInterface::class);
@@ -137,6 +136,53 @@ class GuzzleAdapterTest extends TestCase
             ->method('getHeaders')
             ->willReturn([]);
         $options[RequestOptions::JSON] = $data;
+        $this->client->expects(self::once())
+            ->method('request')
+            ->with(HttpMethod::METHOD_GET, $uri, $options)
+            ->willReturn($clientResponse);
+        $clientResponse->expects(self::exactly(2))
+            ->method('getStatusCode')
+            ->willReturn(HttpCode::HTTP_CODE_OK);
+        $this->logger->expects(self::once())
+            ->method('info');
+        $this->responseFactory->expects(self::once())
+            ->method('createSuccess')
+            ->with($clientResponse)
+            ->willReturn($response);
+
+        $result = $this->adapter->call($request);
+        $this->assertEquals($response, $result);
+    }
+
+    public function testDataNotEmptySuccessQuery()
+    {
+        $endpoint = uniqid();
+        $uri = $this->urn . '/' . $endpoint;
+        $data = uniqid();
+
+        $request = $this->createMock(RequestInterface::class);
+        $clientResponse = $this->createMock(PsrResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+
+        $request->expects(self::once())
+            ->method('getEndpoint')
+            ->willReturn($endpoint);
+        $request->expects(self::once())
+            ->method('getData')
+            ->willReturn($data);
+        $request->expects(self::once())
+            ->method('getDataRequestOption')
+            ->willReturn(RequestOptions::QUERY);
+        $request->expects(self::once())
+            ->method('getMethod')
+            ->willReturn(HttpMethod::METHOD_GET);
+        $options = [
+            RequestOptions::TIMEOUT => AdapterInterface::DEFAULT_TIMEOUT,
+        ];
+        $request->expects(self::once())
+            ->method('getHeaders')
+            ->willReturn([]);
+        $options[RequestOptions::QUERY] = $data;
         $this->client->expects(self::once())
             ->method('request')
             ->with(HttpMethod::METHOD_GET, $uri, $options)

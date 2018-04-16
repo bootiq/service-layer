@@ -16,6 +16,11 @@ use Psr\SimpleCache\CacheInterface;
 
 class GuzzleAdapter implements AdapterInterface
 {
+    const AVAILABLE_DATA_REQUEST_OPTIONS = [
+        RequestOptions::JSON,
+        RequestOptions::FORM_PARAMS,
+        RequestOptions::QUERY,
+    ];
 
     /**
      * @var ClientInterface
@@ -122,7 +127,7 @@ class GuzzleAdapter implements AdapterInterface
 
         if ($data !== null) {
             $dataRequestOption = $request->getDataRequestOption();
-            if (!in_array($dataRequestOption, [RequestOptions::JSON, RequestOptions::FORM_PARAMS])) {
+            if (!in_array($dataRequestOption, self::AVAILABLE_DATA_REQUEST_OPTIONS)) {
                 throw new \InvalidArgumentException('Unknow data request option (' . $dataRequestOption . ')');
             }
             $options[$dataRequestOption] = $data;
