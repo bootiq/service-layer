@@ -11,4 +11,5 @@ final class HttpMethod
     const METHOD_PUT = 'PUT';
     const METHOD_DELETE = 'DELETE';
     const METHOD_OPTIONS = 'OPTIONS';
+    const METHOD_PATCH = 'PATCH';
 }

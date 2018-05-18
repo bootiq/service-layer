@@ -7,6 +7,7 @@ use BootIq\ServiceLayer\Request\DeleteMethod;
 use BootIq\ServiceLayer\Request\GetMethod;
 use BootIq\ServiceLayer\Request\HeadMethod;
 use BootIq\ServiceLayer\Request\HttpMethod as HttpMethodRequest;
+use BootIq\ServiceLayer\Request\PatchMethod;
 use BootIq\ServiceLayer\Request\PostMethod;
 use BootIq\ServiceLayer\Request\PutMethod;
 use GuzzleHttp\RequestOptions;
@@ -253,6 +254,50 @@ class AbstractMethodTest extends TestCase
         };
 
         $this->assertEquals(HttpMethod::METHOD_DELETE, $class->getMethod());
+        $this->assertEmpty($class->getEndpoint());
+        $this->assertEmpty($class->getData());
+        $this->assertFalse($class->isCacheable());
+        $this->assertEmpty($class->getHeaders());
+        $key = uniqid();
+        $value = uniqid();
+        $class->addHeader($key, $value);
+        $this->assertEquals($value, $class->getHeader($key));
+        $class->setHeaders([$key => $value]);
+        $this->assertEquals($value, $class->getHeader($key));
+        $this->assertEquals([$key => $value], $class->getHeaders());
+        $this->assertEquals(RequestOptions::JSON, $class->getDataRequestOption());
+    }
+
+    public function testPatchMethod()
+    {
+        $class = new class extends PatchMethod {
+
+            /**
+             * @return bool
+             */
+            public function isCacheable(): bool
+            {
+                return false;
+            }
+
+            /**
+             * @return string
+             */
+            public function getEndpoint(): string
+            {
+                return '';
+            }
+
+            /**
+             * @return array|null
+             */
+            public function getData()
+            {
+                return null;
+            }
+        };
+
+        $this->assertEquals(HttpMethod::METHOD_PATCH, $class->getMethod());
         $this->assertEmpty($class->getEndpoint());
         $this->assertEmpty($class->getData());
         $this->assertFalse($class->isCacheable());
