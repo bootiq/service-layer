@@ -10,6 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
@@ -128,7 +129,7 @@ class GuzzleAdapter implements AdapterInterface
         if ($data !== null) {
             $dataRequestOption = $request->getDataRequestOption();
             if (!in_array($dataRequestOption, self::AVAILABLE_DATA_REQUEST_OPTIONS)) {
-                throw new \InvalidArgumentException('Unknow data request option (' . $dataRequestOption . ')');
+                throw new InvalidArgumentException('Unknown data request option (' . $dataRequestOption . ')');
             }
             $options[$dataRequestOption] = $data;
         }
@@ -167,6 +168,7 @@ class GuzzleAdapter implements AdapterInterface
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
+     * @throws \Exception
      */
     protected function loadFromCache(RequestInterface $request): ResponseInterface
     {

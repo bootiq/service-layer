@@ -37,7 +37,7 @@
     </rule>
     <rule ref="rulesets/design.xml/CouplingBetweenObjects">
         <properties>
-            <property name="minimum" description="Maximum number of acceptable dependencies." value="20"/>
+            <property name="maximum" description="Maximum number of acceptable dependencies." value="20"/>
         </properties>
     </rule>
 </ruleset>
