@@ -16,7 +16,8 @@ class ResponseFactory implements ResponseFactoryInterface
         return new Response(
             true,
             $response->getStatusCode(),
-            $response->getBody()->getContents()
+            $response->getBody()->getContents(),
+            $response
         );
     }
 
@@ -29,7 +30,8 @@ class ResponseFactory implements ResponseFactoryInterface
         return new Response(
             false,
             $response->getStatusCode(),
-            $response->getBody()->getContents()
+            $response->getBody()->getContents(),
+            $response
         );
     }
 }

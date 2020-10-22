@@ -229,8 +229,10 @@ class GuzzleAdapterCacheTest extends TestCase
     {
         $endpoint = uniqid();
         $data = uniqid();
+        $requestOptions = [uniqid()];
         $jsonData = \GuzzleHttp\json_encode($data);
-        $cacheKey = AdapterInterface::DEFAULT_KEY_PREFIX . md5($endpoint . $jsonData);
+        $jsonRequestOptions = \GuzzleHttp\json_encode($requestOptions);
+        $cacheKey = AdapterInterface::DEFAULT_KEY_PREFIX . md5($endpoint . $jsonData . $jsonRequestOptions);
 
         $cache = $this->createMock(CacheInterface::class);
         $request = $this->createMock(RequestInterface::class);
@@ -256,7 +258,7 @@ class GuzzleAdapterCacheTest extends TestCase
             ->with($cacheKey)
             ->willReturn($response);
 
-        $result = $this->adapter->call($request);
+        $result = $this->adapter->call($request, $requestOptions);
         $this->assertEquals($response, $result);
     }
 }
