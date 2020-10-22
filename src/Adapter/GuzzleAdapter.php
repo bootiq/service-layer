@@ -99,32 +99,30 @@ class GuzzleAdapter implements AdapterInterface
 
     /**
      * @param RequestInterface $request
+     * @param array $requestOptions
      * @return ResponseInterface
-     * @throws ClientException
      * @throws \Exception
      */
-    public function call(RequestInterface $request): ResponseInterface
+    public function call(RequestInterface $request, array $requestOptions = []): ResponseInterface
     {
         if ($this->cache !== null && $request->isCacheable()) {
-            return $this->loadFromCache($request);
+            return $this->loadFromCache($request, $requestOptions);
         }
-        return $this->loadFromApi($request);
+        return $this->loadFromApi($request, $requestOptions);
     }
 
     /**
      * @param RequestInterface $request
+     * @param array $requestOptions
      * @return ResponseInterface
-     * @throws ClientException
-     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function loadFromApi(RequestInterface $request): ResponseInterface
+    protected function loadFromApi(RequestInterface $request, array $requestOptions): ResponseInterface
     {
         $uri = $this->urn . '/' . $request->getEndpoint();
         $data = $request->getData();
-
-        $options = [
-            RequestOptions::TIMEOUT => $this->timeout,
-        ];
+        $options = $requestOptions;
+        $options[RequestOptions::TIMEOUT] = $this->timeout;
 
         if ($data !== null) {
             $dataRequestOption = $request->getDataRequestOption();
@@ -167,22 +165,24 @@ class GuzzleAdapter implements AdapterInterface
 
     /**
      * @param RequestInterface $request
+     * @param array $requestOptions
      * @return ResponseInterface
-     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    protected function loadFromCache(RequestInterface $request): ResponseInterface
+    protected function loadFromCache(RequestInterface $request, array $requestOptions): ResponseInterface
     {
-        $cacheKey = $this->getCacheKey($request);
+        $cacheKey = $this->getCacheKey($request, $requestOptions);
 
         if (null === $this->cache) {
-            return $this->loadFromApi($request);
+            return $this->loadFromApi($request, $requestOptions);
         }
 
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
         }
 
-        $response = $this->loadFromApi($request);
+        $response = $this->loadFromApi($request, $requestOptions);
         if ($response->isError()) {
             return $response;
         }
@@ -193,16 +193,19 @@ class GuzzleAdapter implements AdapterInterface
 
     /**
      * @param RequestInterface $request
+     * @param array $requestOptions
      * @return string
      */
-    protected function getCacheKey(RequestInterface $request): string
+    protected function getCacheKey(RequestInterface $request, array $requestOptions): string
     {
         $data = $request->getData();
         $stringForHash = $request->getEndpoint();
         if ($data !== null) {
             $jsonData = \GuzzleHttp\json_encode($request->getData());
-            $stringForHash .= $jsonData;
+            $optionsData = \GuzzleHttp\json_encode($requestOptions);
+            $stringForHash .= $jsonData . $optionsData;
         }
+
         return self::DEFAULT_KEY_PREFIX . md5($stringForHash);
     }
 }

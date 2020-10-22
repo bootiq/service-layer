@@ -2,6 +2,8 @@
 
 namespace BootIq\ServiceLayer\Response;
 
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 interface ResponseInterface
 {
 
@@ -19,4 +21,9 @@ interface ResponseInterface
      * @return string
      */
     public function getResponseData(): string;
+
+    /**
+     * @return PsrResponseInterface
+     */
+    public function getPsrResponse(): PsrResponseInterface;
 }

@@ -32,7 +32,8 @@ interface AdapterInterface
 
     /**
      * @param RequestInterface $request
+     * @param array $requestOptions
      * @return ResponseInterface
      */
-    public function call(RequestInterface $request): ResponseInterface;
+    public function call(RequestInterface $request, array $requestOptions = []): ResponseInterface;
 }

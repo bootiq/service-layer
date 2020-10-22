@@ -2,6 +2,8 @@
 
 namespace BootIq\ServiceLayer\Response;
 
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 class Response implements ResponseInterface
 {
 
@@ -21,16 +23,23 @@ class Response implements ResponseInterface
     private $responseData;
 
     /**
+     * @var PsrResponseInterface
+     */
+    private $psrResponse;
+
+    /**
      * Response constructor.
      * @param bool $error
      * @param int $httpCode
      * @param string $responseData
+     * @param PsrResponseInterface $psrResponse
      */
-    public function __construct(bool $error, int $httpCode, string $responseData)
+    public function __construct(bool $error, int $httpCode, string $responseData, PsrResponseInterface $psrResponse)
     {
         $this->error = $error;
         $this->httpCode = $httpCode;
         $this->responseData = $responseData;
+        $this->psrResponse = $psrResponse;
     }
 
     /**
@@ -55,5 +64,13 @@ class Response implements ResponseInterface
     public function getResponseData(): string
     {
         return $this->responseData;
+    }
+
+    /**
+     * @return PsrResponseInterface
+     */
+    public function getPsrResponse(): PsrResponseInterface
+    {
+        return $this->psrResponse;
     }
 }
