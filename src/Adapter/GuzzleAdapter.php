@@ -21,6 +21,7 @@ class GuzzleAdapter implements AdapterInterface
         RequestOptions::JSON,
         RequestOptions::FORM_PARAMS,
         RequestOptions::QUERY,
+        RequestOptions::MULTIPART,
     ];
 
     /**
